@@ -1,0 +1,26 @@
+name: Deploy to EC2 on master branch push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the files # This will checkout files to the instance from the github repository 
+        uses: actions/checkout@v2
+
+      - name: SSH and deploy # SSH into the machine, pull the recent changes and restart the deployment
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          HOST_DNS: ${{ secrets.HOST_DNS }}
+        timeout-minutes: 1
+        run: |
+          echo "$SSH_PRIVATE_KEY" > keyfile 
+          chmod 600 keyfile 
+          mkdir -p ~/.ssh
+          cp known_hosts ~/.ssh/known_hosts
+          ssh -i keyfile ubuntu@$HOST_DNS "sudo bash ~/deploy.sh"
