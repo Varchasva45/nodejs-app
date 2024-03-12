@@ -7,5 +7,5 @@ app.listen(PORT, () => {
 })
 
 app.get('/', (req, res) => {
-    res.send('server is up and running with ci-cd!');
+    res.send('server is up and running with ci-cd updated!');
 });
